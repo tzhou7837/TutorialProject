@@ -1,0 +1,137 @@
+<html lang="en">
+    <head>
+      <title>Quiz</title>
+      <meta charset="utf-8">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <script src = "https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+    </head>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+
+        .hero-image {
+          background-image: url("5.jpg");
+          height: 50%;
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: cover;
+          position: relative;
+        }
+
+        .hero-text {
+          text-align: center;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: red;
+        }
+
+        .hero-text button {
+          border: none;
+          outline: 0;
+          display: inline-block;
+          padding: 10px 25px;
+          color: black;
+          background-color: #ddd;
+          text-align: center;
+          cursor: pointer;
+        }
+
+        .hero-text button:hover {
+          background-color: #555;
+          color: white;
+        }
+    </style>
+    
+    <script type = "text/template" id = "template">
+        <div class = "card">
+        <h1>{{description}}</h1>
+        <p>(1) {{choice1}}</p>
+        <p>(2) {{choice2}}<p>
+        <p>(3) {{choice3}}<p>
+        <p>(4) {{choice4}}<p>
+        <input id = "{{id}}" type = "text" placeholder = "Enter Choice">
+        </div>
+        </script>
+
+        <script>
+            var data;
+                function loadJSON(){
+                    $.getJSON("https://chess-quiz.firebaseio.com/.json" , function(results){
+                        data = results
+                        displayData();
+                    })
+                }
+            </script>
+            <script>
+                
+                function displayData(){
+                    var build = " ";                    
+                    var template = document.getElementById ("template").innerHTML;
+                    var output = document.getElementById ("output");
+                    for (var key in data){
+                            build += Mustache.render(template,data[key]);
+                        
+                    }output.innerHTML = build; 
+                } 
+                
+                function grade(){   
+                    var score = 0;
+                    for(var i = 1; i<=9; i++){
+                        var userAnswer = document.getElementById("q"+ i ).value;
+                        var correctAnwser = data["Question"+i].answer;
+                        if(userAnswer == correctAnwser){
+                        score += 10
+                        var finalscore = parseFloat(score/90)*100;
+                        var n = finalscore.toFixed();
+                        }
+                    }
+                    output.innerHTML = "Your Final Score Is " + n 
+                }
+            </script>
+
+
+
+    <body onload = "loadJSON()">
+            <div class="hero-image">
+                    <div class="hero-text">
+                      <h1 style="font-size:50px">Quiz</h1>
+                    </div>
+                  </div>
+    
+        <div class="container-fluid main">
+            <nav class="navbar navbar-default navbar-fixed-top">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span> 
+                      </button>
+                      <a class="navbar-brand" href="index.html">Home</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="myNavbar">
+                      <ul class="nav navbar-nav">
+                        <li><a href="History.html" title="Go to W3Schools HTML section">History</a></li>
+                        <li><a href="Movements.html" title="Go to W3Schools HTML section">Movements</a></li>
+                        <li><a href="Strategy.html" title="Go to W3Schools HTML section">Strategy</a></li>
+                        <li><a href="Quiz.html" title="Go to W3Schools HTML section">Quiz</a></li>
+                      </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        
+        <div id = "output"></div>
+        <div id = "output2"></div>
+        <button onclick = "grade()">Enter</button>
+    </body>
+
+
+         
+</html>
